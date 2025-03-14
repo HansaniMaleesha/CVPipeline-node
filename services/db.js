@@ -17,10 +17,9 @@
 // module.exports = db;
 
 const mysql = require('mysql2')
-
+require('dotenv').config();
 // Create the connection to the database
-const db = mysql.createConnection('mysql://f7r5ehcl5zh9xz74c6u2:pscale_pw_xlujFMHS4j3iVJ41wPiWsCwB2mzgUdqbpQA7DNY6LTU@gcp.connect.psdb.cloud/joblens_db?ssl={"rejectUnauthorized":true}'
-)
+const db = mysql.createConnection(process.env.DATABASE_URL);
 
 // simple query
 db.query('show tables', function (err, results, fields) {
