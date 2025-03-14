@@ -1,4 +1,5 @@
 
+
 // const mysql = require("mysql2/promise");  // Use mysql2/promise for promise-based queries
 
 // // Create a pool (recommended for multiple queries and better performance)
@@ -32,6 +33,6 @@ db.query('select 1 from dual where ? = ?', [1, 1], function (err, results) {
     console.log(results)
 })
 
-connection.end()
+db.end()
 
 module.exports = db;
