@@ -3,7 +3,7 @@ require("./services/db");
 require("./controllers/email");
 const express = require("express");
 const cors = require("cors");
-const cvRoutes = require("./routes/cvRoutes");
+const cvRoutes = require("./routes/cvRoutes.js");
 
 const app = express();
 // Enable CORS for frontend (Adjust the origin if needed)
