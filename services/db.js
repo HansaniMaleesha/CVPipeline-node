@@ -17,22 +17,29 @@
 
 // module.exports = db;
 
-const mysql = require('mysql2')
-require('dotenv').config();
-// Create the connection to the database
-const db = mysql.createConnection(process.env.DATABASE_URL);
+const mysql = require('mysql2/promise'); // Use mysql2/promise for promise-based queries
+require('dotenv').config(); // To load the .env file
+console.log("uri", process.env.DB_URL);
 
-// simple query
-db.query('show tables', function (err, results, fields) {
-    console.log(results) // results contains rows returned by server
-    console.log(fields) // fields contains extra metadata about results, if available
-})
+// Create the connection pool using the DB URL from the .env file
+const db = mysql.createPool({
+    uri: process.env.DB_URL, // Connection string from PlanetScale
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+});
 
-// Example with placeholders
-db.query('select 1 from dual where ? = ?', [1, 1], function (err, results) {
-    console.log(results)
-})
+// Test the connection (optional, but useful for debugging)
+async function testConnection() {
+    try {
+        const connection = await db.getConnection();
+        console.log("✅ Connected to PlanetScale Database");
+        connection.release();  // Release the connection back to the pool
+    } catch (err) {
+        console.error("❌ PlanetScale connection error:", err);
+    }
+}
 
-db.end()
+testConnection();
 
-module.exports = db;
+module.exports = db; // Export the DB connection to use in other parts of your application

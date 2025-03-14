@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
 const JobApplication = require("../models/applicationModel");
+const db = require("../services/db");
 const { uploadToFirebase } = require("../services/firebaseService");
 
 // Multer config - store files in memory
@@ -57,13 +58,15 @@ const uploadCV = async (req, res) => {
         if (response.data.message === "CV processed successfully") {
             // Save application details to MySQL
             try {
-                await JobApplication.create({ name, email, phone, cv_url: cvURL });
-                console.log("Saved application details to MySQL");
+                const [rows] = await db.execute(
+                    'INSERT INTO JobApplications (name, email, phone, cv_url) VALUES (?, ?, ?, ?)',
+                    [name, email, phone, cvURL]
+                );
+                console.log("Saved application details to Planetscale DB");
             } catch (dbError) {
                 console.error("Database Error:", dbError);
                 return res.status(500).json({ message: "Error saving application data" });
             }
-
             // Delete the temporary file after processing
             fs.unlinkSync(tempFilePath);
 
